@@ -1,0 +1,74 @@
+
+-- ASSIGNMENT 1
+
+-- Show the percentage increase in total sales 
+-- wrt the previous month 
+-- for each ram brand and each country
+
+WITH MEMBER diff AS
+( [Measures].[Sales Usd] - ( [Time].[DayMonthQuarterYear].prevmember , [Measures].[Sales Usd]) ) /
+ ( [Time].[DayMonthQuarterYear].prevmember , [Measures].[Sales Usd]),
+
+FORMAT_STRING="Percent"
+
+SELECT {[Measures].[Sales Usd], diff} on columns,
+nonempty(([RamProduct].[Brand].[Brand], [Geography].[ContinentCountryRegion].[Country], 
+[Time].[Year].[Year], [Time].[DayMonthQuarterYear].[Month Name])) on rows
+FROM [Group18HW Mart]
+
+
+-- ASSIGNMENT 2
+
+-- For each region and ram brand 
+-- show the total sales in percentage 
+-- wrt the total sales of the corresponding country
+
+with member sales_country as
+([Geography].[ContinentCountryRegion].currentmember.parent, [Measures].[Sales Usd])
+
+member ratio as
+[Measures].[Sales Usd] / sales_country,
+
+FORMAT_STRING= "Percent"
+
+SELECT  {[Measures].[Sales Usd], sales_country, ratio} on columns,
+nonempty( ([RamProduct].[Brand].[Brand], [Geography].[ContinentCountryRegion].[Region], [Geography].[Country].[Country]) ) on rows
+from [Group18HWMart_Cube]
+
+
+-- ASSIGNMENT 3
+
+-- Show the ram memory types 
+-- having a total sales greater than 10% of the totals sales 
+--in each continent by continent and year
+
+with member sales_continent as
+([RamProduct].[Memory Type].[All], [Measures].[Sales Usd])
+
+member ratio as
+[Measures].[Sales Usd] / sales_continent
+,
+
+FORMAT_STRING= "Percent"
+
+SELECT {[Measures].[Sales Usd], sales_continent, ratio} on columns,
+NONEMPTY( ([Geography].[Continent].[Continent], 
+[Time].[Year].[Year], [RamProduct].[Memory Type].[Memory Type]) ) on rows
+from [Group18HW Mart]
+
+
+-- version 2
+
+with member Continent_Tot_sales as 
+([Geography].[ContinentCountryRegion].currentmember, 
+[Time].[Year].currentmember, [RamProduct].[Memory Type].[All], [Measures].[Sales Usd]) 
+
+member Perc_Sales_wrt_continent as 
+[Measures].[Sales Usd]/Continent_Tot_sales, 
+
+format_string = "Percent" 
+
+select {[Measures].[Sales Usd],Continent_Tot_sales,Perc_Sales_wrt_continent} on columns, 
+nonempty(([Geography].[ContinentCountryRegion].[Continent],[Time].[Year].[Year], 
+[RamProduct].[Memory Type].[Memory Type])) on rows 
+from [Group18HW Mart];
