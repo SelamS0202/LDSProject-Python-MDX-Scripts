@@ -1,5 +1,5 @@
 
--- ASSIGNMENT 1
+-- Q1
 
 -- Show the percentage increase in total sales 
 -- wrt the previous month 
@@ -17,7 +17,7 @@ nonempty(([RamProduct].[Brand].[Brand], [Geography].[ContinentCountryRegion].[Co
 FROM [Group18HW Mart]
 
 
--- ASSIGNMENT 2
+-- Q2
 
 -- For each region and ram brand 
 -- show the total sales in percentage 
@@ -36,12 +36,12 @@ nonempty( ([RamProduct].[Brand].[Brand], [Geography].[ContinentCountryRegion].[R
 from [Group18HWMart_Cube]
 
 
--- ASSIGNMENT 3
+-- Q3
 
 -- Show the ram memory types 
 -- having a total sales greater than 10% of the totals sales 
 --in each continent by continent and year
-
+-- Solution 1
 with member sales_continent as
 ([RamProduct].[Memory Type].[All], [Measures].[Sales Usd])
 
@@ -57,7 +57,7 @@ NONEMPTY( ([Geography].[Continent].[Continent],
 from [Group18HW Mart]
 
 
--- version 2
+-- Solution 2
 
 with member Continent_Tot_sales as 
 ([Geography].[ContinentCountryRegion].currentmember, 
